@@ -18,6 +18,9 @@ importers:
       '@tauri-apps/cli':
         specifier: ^2
         version: 2.12.3
+      easytimer.js:
+        specifier: ^4.6.0
+        version: 4.6.0
       typescript:
         specifier: ~6.0.3
         version: 6.0.3
@@ -214,6 +217,9 @@ packages:
   detect-libc@2.1.2:
     resolution: {integrity: sha512-Btj2BOOO83o3WyH59e8MgXsxEQVcarkUOpEYrubB0urwnN10yQ364rsiByU11nZlqWYZm05i/of7io4mzihBtQ==}
     engines: {node: '>=8'}
+
+  easytimer.js@4.6.0:
+    resolution: {integrity: sha512-2kl/X/HnB5mKJ29x7N908CrNl5y8yDgDuD8U7TXTEHs/lBFVXT91DSoiXncYnwC1TPPDfomlLDKPaTSqT3dygQ==}
 
   fdir@6.5.0:
     resolution: {integrity: sha512-tIbYtZbucOs0BRGqPJkshJUYdL+SDH7dVM8gjy+ERp3WAUjLEFJE+02kanyHtwjWOnwrKYBiwAmM0p4kLJAnXg==}
@@ -485,6 +491,8 @@ snapshots:
       '@tauri-apps/api': 2.12.4
 
   detect-libc@2.1.2: {}
+
+  easytimer.js@4.6.0: {}
 
   fdir@6.5.0(picomatch@4.0.7):
     optionalDependencies:

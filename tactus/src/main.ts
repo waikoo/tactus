@@ -1,4 +1,5 @@
 import WaveSurfer from "wavesurfer.js";
+import Timer from "easytimer.js";
 
 const WAVESURFER_PROGRESS_COLOR = "#ffffff";
 
@@ -61,3 +62,9 @@ if (playIcon && pauseIcon) {
     }
   });
 }
+
+const timer = new Timer();
+timer.start()
+timer.addEventListener("secondsUpdated", function (e) {
+  $("#basicUsage").html(timer.getTimeValues().toString());
+});

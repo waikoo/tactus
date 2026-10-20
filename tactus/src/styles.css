@@ -57,37 +57,42 @@ h1,
 
 .controls {
     display: grid;
+    gap: 4rem;
     grid-template-columns: 1fr auto auto auto 1fr;
     margin-top: 4rem;
+    align-items: center;
 }
 
-.play-pause {
+.play-pause,
+.previous,
+.next {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    border-radius: 100%;
+
     grid-column: 3/4;
     border: 3px solid rgb(255, 255, 255, 10%);
     border-radius: 100%;
     padding: 0.5rem;
     position: relative;
-}
-
-.play-pause {
-    position: relative;
-    isolation: isolate;
-    overflow: hidden;
-    border-radius: 24px;
-    padding: 2rem;
-    border-radius: 100%;
-
     /* Frosted background */
-    background: rgb(255 255 255 / 4%);
     backdrop-filter: blur(14px) saturate(160%);
     -webkit-backdrop-filter: blur(14px) saturate(160%);
-
-    /* Nearly invisible physical border */
     border: 1px solid rgb(255 255 255 / 14%);
 }
 
+.play-pause:hover {
+    box-shadow: 5px 4px 50px 13px rgba(255, 255, 255, 75%);
+    -webkit-box-shadow: 5px 4px 20px 23px rgba(255, 255, 255, 75%);
+    -moz-box-shadow: 5px 4px 50px 23px rgba(255, 255, 255, 75%);
+    background: rgb(255 255 255 / 14%);
+}
+
 /* Subtle highlights along the inner edge */
-.play-pause::before {
+.play-pause::before,
+.previous::before,
+.next::before {
     content: "";
     position: absolute;
     inset: 0;
@@ -111,13 +116,22 @@ h1,
     mask-composite: exclude;
 }
 
-.play, .pause {
+.play,
+.pause,
+.previous,
+.next {
     position: relative;
     z-index: 1;
     padding: 1.5rem;
 }
 
-.glass {
+.previous,
+.next {
+    padding: 1rem;
+    cursor: pointer;
+}
+
+.play-pause {
     --warp: 1;
     --spin: 0deg;
 
@@ -127,8 +141,9 @@ h1,
         border-color 450ms ease;
 }
 
-/* Vortex-like light ripple over the glass */
-.play-pause::after {
+.play-pause::after,
+.previous::after,
+.next::after {
     content: "";
     position: absolute;
     inset: -40%;
@@ -166,67 +181,66 @@ h1,
     mask-mode: -moz-repeating-radial-gradient(white);
 }
 
-
 .glass {
-  --glow-x: 50%;
-  --glow-y: 50%;
+    --glow-x: 50%;
+    --glow-y: 50%;
 
-  position: relative;
-  isolation: isolate;
-  overflow: hidden;
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
 }
 
 /* Soft white sheen */
 .play-pause::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  pointer-events: none;
-  border-radius: inherit;
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    border-radius: inherit;
 
-  background: radial-gradient(
-    circle at var(--glow-x) var(--glow-y),
-    rgb(255 255 255 / 12%) 0%,
-    rgb(255 255 255 / 5%) 22%,
-    transparent 58%
-  );
+    background: radial-gradient(
+        circle at var(--glow-x) var(--glow-y),
+        rgb(255 255 255 / 12%) 0%,
+        rgb(255 255 255 / 5%) 22%,
+        transparent 58%
+    );
 
-  opacity: 0;
-  transition: opacity 450ms ease;
+    opacity: 0;
+    transition: opacity 450ms ease;
 }
 
 .play-pause:hover::after {
-  opacity: 1;
+    opacity: 1;
 }
 
 .play-pause::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 3;
-  pointer-events: none;
-  border-radius: inherit;
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    pointer-events: none;
+    border-radius: inherit;
 
-  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 9%);
-  opacity: 0;
-  transition: opacity 450ms ease;
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 9%);
+    opacity: 0;
+    transition: opacity 450ms ease;
 }
 
 .play-pause:hover::before {
-  opacity: 1;
+    opacity: 1;
+}
+
+.previous {
+    grid-column: 2/3;
+}
+
+.next {
+    grid-column: 4/5;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .glass::before,
-  .glass::after {
-    transition: none;
-  }
-}
-
-
-@media (prefers-reduced-motion: reduce) {
-    .glass,
+    .glass::before,
     .glass::after {
         transition: none;
     }
