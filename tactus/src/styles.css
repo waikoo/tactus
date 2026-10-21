@@ -1,8 +1,7 @@
 :root {
     font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
 
-    color: #0f0f0f;
-    background-color: #f6f6f6;
+    color: #fff;
 
     font-synthesis: none;
     text-rendering: optimizeLegibility;
@@ -41,7 +40,6 @@ body {
     padding: 2rem 3rem 1.5rem 3rem;
 }
 
-
 h1,
 #waveform,
 .line,
@@ -55,6 +53,11 @@ h1,
     margin: 0 auto;
 }
 
+.waveform-con,
+.music-controls {
+    padding: 1rem 0;
+}
+
 .line {
     position: absolute;
     background-color: #fff;
@@ -66,33 +69,34 @@ h1,
 }
 
 #waveform {
+    position: relative;
     width: 80%;
     margin: 0 auto;
     min-height: 128px;
+    z-index: 11000;
 }
 
-.controls {
+.music-controls {
     display: grid;
     max-width: min-content;
-    min-width: 500px;
+    min-width: 450px;
     gap: 4rem;
     grid-template-columns: 1fr auto auto auto 1fr;
     margin: 0 auto;
     margin-top: 4rem;
     align-items: center;
+    padding: 1rem 0;
 }
 
 .play-pause,
 .previous,
 .next {
     position: relative;
-    isolation: isolate;
-    overflow: hidden;
     border-radius: 1000px;
 
     grid-column: 3/4;
     border: 3px solid rgb(255, 255, 255, 10%);
-    border-radius: 100%;
+    border-radius: 1000px;
     padding: 0.5rem;
     position: relative;
     backdrop-filter: blur(14px) saturate(160%);
@@ -123,15 +127,14 @@ h1,
     grid-column: 4/5;
 }
 
-@media (prefers-reduced-motion: reduce) {
-    .glass::before,
-    .glass::after {
-        transition: none;
-    }
-}
-
 .play-pause {
     cursor: pointer;
+    mask: revert;
+    border: 1px solid rgba(255, 255, 255, 50%);
+}
+
+.play-pause:hover {
+    background: rgba(255, 255, 255, 25%);
 }
 
 .hide {
@@ -142,7 +145,6 @@ h1,
     background: rgb(255 255 255 / 10%);
     border: 1px solid rgb(255 255 255 / 16%);
     backdrop-filter: blur(20px);
-    fill: rgba(250, 250, 250, 50%);
 }
 
 .timer {
@@ -150,21 +152,67 @@ h1,
     flex-direction: column;
 }
 
-.timer .display {
+.display {
+    position: relative;
+    top: -15px;
     display: flex;
-    gap: 1rem;
+    gap: 0.2rem;
     justify-content: center;
-    font-size: 4rem;
+    font-size: 6rem;
 }
 
-.timer .controls {
+.timer {
+    width: 400px;
+    height: 400px;
+}
+
+button {
+    background: transparent;
+    border: none;
+}
+
+.timer-controls {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+.timer-controls svg {
+    color: white;
+}
+
+.timer-start, .reset {
+    border-radius: 1000px;
+    cursor: pointer;
+    transition: background-color 200ms ease;
+}
+
+.timer-start:hover, .reset:hover {
+    background: rgba(255, 255, 255, 25%);
+}
+
+.timer-playlist {
+    padding-top: 4rem;
+    display: flex;
     justify-content: space-between;
+    max-width: 800px;
+    margin: 0 auto;
 }
 
-@media (prefers-color-scheme: dark) {
+.github-logo {
+    color: white;
+    position: fixed;
+    left: 6px;
+    bottom: 0;
+    padding: 0.2rem;
+}
+
+/*@media (prefers-color-scheme: dark) {
     :root {
         color: #f6f6f6;
-        background: #00e1ff;
         background: #833ab4;
         background: linear-gradient(
             90deg,
@@ -173,4 +221,4 @@ h1,
             rgba(252, 176, 69, 1) 100%
         );
     }
-}
+}*/

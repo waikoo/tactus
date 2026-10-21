@@ -1,34 +1,71 @@
 import WaveSurfer from "wavesurfer.js";
 import { Timer } from "easytimer.js";
 
-const WAVESURFER_PROGRESS_COLOR = "#ffffff";
+// dominant color here:
+const WAVESURFER_PROGRESS_COLOR = "#8ab8b8b8";
 
 const wavesurfer = WaveSurfer.create({
   container: "#waveform",
-  waveColor: "#ffffff80",
+  waveColor: "#ffffff",
   progressColor: WAVESURFER_PROGRESS_COLOR,
   dragToSeek: true,
   url: "/tsunami.mp3",
 });
 
-const playIcon = document.querySelector(".play");
-const pauseIcon = document.querySelector(".pause");
+// music player controls
+const playIcon = document.querySelector(".play") as HTMLDivElement;
+const pauseIcon = document.querySelector(".pause") as HTMLDivElement;
+const previousIcon = document.querySelector(".previous") as HTMLDivElement;
+const nextIcon = document.querySelector(".next") as HTMLDivElement;
+
+// waveform
 const waveLine = document.querySelector(".line") as HTMLDivElement;
+
+// timer controls
 const timerEl = document.querySelector(".timer") as HTMLElement;
 const timerMinutes = timerEl.querySelector(".minutes");
 const timerSeconds = timerEl.querySelector(".seconds");
-const timerStart = document.querySelector(".timer-start");
+const timerStart = document.querySelector(".timer-start") as HTMLButtonElement;
+const resetTimer = document.querySelector(".reset") as HTMLButtonElement;
+
+// background
+// define gradients
+const bgColors = {
+  magentaRedYellowLR: ["rgba(131, 58, 180) 0%", "rgba(253, 29, 29) 50%", "rgba(252, 176, 69) 100%"]
+}
+
+const createGradient = (
+  colors: string[],
+  angle = "90deg",
+): string => {
+  return `linear-gradient(${angle}, ${colors.join(", ")})`
+};
+
+const backgroundGradient = createGradient(bgColors.magentaRedYellowLR);
+
+// inject the constructed string to the body
+document.body.style.background = backgroundGradient
 
 if (waveLine) {
   waveLine.style.backgroundColor = WAVESURFER_PROGRESS_COLOR;
 }
 
+// set tooltips
+if (playIcon && pauseIcon && timerStart && resetTimer) {
+  pauseIcon.title = "Pause Song"
+  playIcon.title = "Play Current Song"
+  previousIcon.title = "Play Previous Song"
+  nextIcon.title = "Play Next Song"
+  timerStart.title = "Start Timer"
+  resetTimer.title = "Reset Timer"
+}
 if (playIcon && pauseIcon) {
   // play song when play button is clicked, hide pause icon
   playIcon.addEventListener("click", () => {
     wavesurfer.play();
     playIcon.classList.add("hide");
     pauseIcon.classList.remove("hide");
+    
   });
 
   // when waveform is clicked, play the song
@@ -76,7 +113,7 @@ const renderTimer = () => {
     timerSeconds.textContent = seconds.toString().padStart(2, "0");
   }
 };
-// renderTimer()
+renderTimer()
 
 // Update immediately when started
 timer.addEventListener("started", renderTimer);
@@ -89,6 +126,12 @@ timer.addEventListener("targetAchieved", () => {
   renderTimer();
   console.log("Rest finished!");
 });
+
+if (resetTimer) {
+  resetTimer.addEventListener("click", () => {
+    timer.reset()
+  })
+}
 
 // Start the countdown
 if (timerStart) {
