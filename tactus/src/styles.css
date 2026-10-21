@@ -93,7 +93,6 @@ h1,
 .next {
     position: relative;
     border-radius: 1000px;
-
     grid-column: 3/4;
     border: 3px solid rgb(255, 255, 255, 10%);
     border-radius: 1000px;
@@ -111,6 +110,10 @@ h1,
     position: relative;
     z-index: 1;
     padding: 1.5rem;
+}
+
+.play-pause {
+    border-radius: 1000px;
 }
 
 .previous,
@@ -180,17 +183,27 @@ button {
     color: white;
 }
 
-.timer-controls svg {
+.play {
+    border-radius: 1000px;
+}
+
+.timer-controls svg,
+.play svg {
     color: white;
 }
 
-.timer-start, .reset {
+.timer-start,
+.reset {
     border-radius: 1000px;
     cursor: pointer;
+}
+
+.transition {
     transition: background-color 200ms ease;
 }
 
-.timer-start:hover, .reset:hover {
+.reset:hover,
+.play:hover {
     background: rgba(255, 255, 255, 25%);
 }
 
@@ -198,8 +211,9 @@ button {
     padding-top: 4rem;
     display: flex;
     justify-content: space-between;
-    max-width: 800px;
+    max-width: 1200px;
     margin: 0 auto;
+    gap: 4rem;
 }
 
 .github-logo {
@@ -208,6 +222,47 @@ button {
     left: 6px;
     bottom: 0;
     padding: 0.2rem;
+}
+
+.folder-button {
+    display: inline-flex;
+    align-items: center;
+    margin-top: 0.2rem;
+    cursor: pointer;
+    padding: 0.5rem;
+}
+
+.playlist {
+    width: 800px;
+}
+
+.playlist-con {
+    overflow-y: auto;
+    height: 360px;
+}
+
+.song-con {
+    padding: 1px 0;
+    cursor: pointer;
+}
+
+.song-con:hover {
+    background: rgb(255 255 255 / 26%);
+    border-radius: 1000px;
+}
+
+.song {
+    font-size: 1.3rem;
+    margin: 5px 0;
+}
+
+.file-picker-con {
+    display: flex;
+    justify-content: center;
+}
+
+.folder-button:hover {
+    background: rgba(255, 255, 255, 25%);
 }
 
 /*@media (prefers-color-scheme: dark) {
