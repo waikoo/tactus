@@ -1,5 +1,5 @@
 import WaveSurfer from "wavesurfer.js";
-import Timer from "easytimer.js";
+import { Timer } from "easytimer.js";
 
 const WAVESURFER_PROGRESS_COLOR = "#ffffff";
 
@@ -14,6 +14,10 @@ const wavesurfer = WaveSurfer.create({
 const playIcon = document.querySelector(".play");
 const pauseIcon = document.querySelector(".pause");
 const waveLine = document.querySelector(".line") as HTMLDivElement;
+const timerEl = document.querySelector(".timer") as HTMLElement;
+const timerMinutes = timerEl.querySelector(".minutes");
+const timerSeconds = timerEl.querySelector(".seconds");
+const timerStart = document.querySelector(".timer-start");
 
 if (waveLine) {
   waveLine.style.backgroundColor = WAVESURFER_PROGRESS_COLOR;
@@ -53,18 +57,47 @@ if (playIcon && pauseIcon) {
     if (e.code == "Space") {
       wavesurfer.playPause();
       if (playIcon.classList.contains("hide")) {
-        playIcon.classList.remove("hide")
-        pauseIcon.classList.add("hide")
+        playIcon.classList.remove("hide");
+        pauseIcon.classList.add("hide");
       } else {
-        playIcon.classList.add("hide")
-        pauseIcon.classList.remove("hide")
+        playIcon.classList.add("hide");
+        pauseIcon.classList.remove("hide");
       }
     }
   });
 }
 
 const timer = new Timer();
-timer.start()
-timer.addEventListener("secondsUpdated", function (e) {
-  $("#basicUsage").html(timer.getTimeValues().toString());
+const renderTimer = () => {
+  const { minutes, seconds } = timer.getTimeValues();
+
+  if (timerMinutes && timerSeconds) {
+    timerMinutes.textContent = minutes.toString();
+    timerSeconds.textContent = seconds.toString().padStart(2, "0");
+  }
+};
+// renderTimer()
+
+// Update immediately when started
+timer.addEventListener("started", renderTimer);
+
+// Update every second
+timer.addEventListener("secondsUpdated", renderTimer);
+
+// Handle completion
+timer.addEventListener("targetAchieved", () => {
+  renderTimer();
+  console.log("Rest finished!");
 });
+
+// Start the countdown
+if (timerStart) {
+  timerStart.addEventListener("click", () => {
+    console.log("clicked");
+    timer.start({
+      countdown: true,
+      startValues: { minutes: 1, seconds: 30 },
+      precision: "seconds",
+    });
+  });
+}
