@@ -247,6 +247,8 @@ button {
     margin-top: 0.2rem;
     cursor: pointer;
     padding: 0.5rem;
+    gap: 0.5rem;
+    padding: 0 1rem;
 }
 
 .playlist {
@@ -307,6 +309,7 @@ button {
     top: 30px;
     z-index: 2;
 }
+
 .settings-panel {
     background: white;
     height: 300px;
@@ -321,6 +324,7 @@ button {
     display: grid;
     gap: 0;
     grid-auto-flow: column;
+    box-shadow: 2px 2px 8px 8px rgba(0, 0, 0, 18%);
 }
 
 .settings-panel.hide {
@@ -331,6 +335,14 @@ button {
     height: 64px;
     width: 64px;
     border-radius: 1rem;
+    box-shadow: 2px 2px 5px 3px rgba(0, 0, 0, 18%);
+    cursor: pointer;
+    justify-self: center;
+}
+
+.settings-panel > *:hover {
+    outline: 1px solid black;
+    padding: 3px;
 }
 
 .selected-gradient {
