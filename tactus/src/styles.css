@@ -256,13 +256,15 @@ button {
     justify-content: center;
 }
 
+
 .playlist-con {
     overflow-y: auto;
     height: 360px;
+    padding: 1rem;
 }
 
 .song-con {
-    padding: 1px 0;
+    padding: 2px;
     cursor: pointer;
 }
 
@@ -274,6 +276,7 @@ button {
 .song {
     font-size: 1.3rem;
     margin: 5px 0;
+    padding: 8px 16px;
 }
 
 .file-picker-con {
@@ -393,4 +396,36 @@ button {
 
 .hide {
     display: none;
+}
+
+
+/* standard styling: firefox and modern browsers */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 75%) transparent;
+}
+
+/* chromium, safari, and other WebKit/Blink browsers */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 75%);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255, 255, 255);
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
 }

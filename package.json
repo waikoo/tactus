@@ -15,7 +15,6 @@
   },
   "dependencies": {
     "colorthief": "^3.5.0",
-    "html-to-image": "^1.11.13",
-    "waviz": "^1.0.0"
+    "html-to-image": "^1.11.13"
   }
 }
