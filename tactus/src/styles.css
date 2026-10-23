@@ -21,14 +21,13 @@ body {
 .visualizer-container {
     position: fixed;
     height: 100vh;
-    
 }
 
 canvas {
     width: 100vw;
     opacity: 0.3;
 }
-    
+
 .glass {
     backdrop-filter: blur(38px) saturate(140%);
     background: rgb(255 255 255 / 5%);
@@ -109,7 +108,7 @@ h1,
     gap: 4rem;
     grid-template-columns: 1fr auto auto auto 1fr;
     margin: 0 auto;
-    margin-top: 4rem;
+    margin-top: 1rem;
     align-items: center;
     padding: 1rem 0;
 }
@@ -266,7 +265,7 @@ button {
 .playlist-con {
     overflow-y: auto;
     height: 360px;
-    padding: 1rem;
+    padding: 0 1rem;
 }
 
 .song-con {
@@ -274,7 +273,7 @@ button {
     cursor: pointer;
 }
 
-.song-con:hover {
+.song:hover {
     background: rgb(255 255 255 / 26%);
     border-radius: 1000px;
 }
@@ -394,13 +393,6 @@ button {
     justify-content: center;
 }
 
-.bars-text {
-    position: absolute;
-    bottom: -30px;
-    font-weight: 800;
-    width: max-content;
-}
-
 .bars {
     display: flex;
     gap: 4px;
@@ -487,6 +479,21 @@ button {
     display: none;
 }
 
+.current-title-con {
+    text-align: center;
+    font-size: 2rem;
+    max-width: max-content;
+    margin: 1rem auto;
+    /*margin-top: 2rem;*/
+    padding: 0 3rem;
+    font-weight: 800;
+}
+
+.current-title p {
+    margin-left: auto;
+    margin-right: auto;
+}
+
 /* standard styling: firefox and modern browsers */
 * {
     scrollbar-width: thin;
@@ -521,3 +528,25 @@ button {
 a:hover {
     background: rgb(255, 255, 255, 25%);
 }
+.current-title-con {
+    position: relative;
+}
+
+.bars-con2 {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    justify-content: center;
+}
+
+.bars-text {
+    position: absolute;
+    /*bottom: 80px;*/
+    font-weight: 800;
+    width: max-content;
+    margin: 0 auto;
+    inset: 0;
+}
+

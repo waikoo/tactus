@@ -60,6 +60,13 @@ const swatch6 = settingsPanel?.querySelector<HTMLDivElement>(".swatch6");
 // waveform
 const waveLine = document.querySelector(".line") as HTMLDivElement;
 const bars = document.querySelector<HTMLDivElement>(".bars");
+const barsText = document.querySelector<HTMLDivElement>(".bars-text");
+const barsCon2 = document.querySelector<HTMLDivElement>(".bars-con2");
+
+// title
+const currentTitleCon = document.querySelector<HTMLParagraphElement>(".current-title-con")
+const currentTitle = document.querySelector<HTMLParagraphElement>(".current-title")
+const currentTitleP = document.querySelector<HTMLParagraphElement>(".current-title p")
 
 // music player controls
 const playIcon = document.querySelector(".play") as HTMLDivElement;
@@ -80,7 +87,6 @@ const filePickerCon =
 const folderPicker = document.querySelector<HTMLInputElement>("#folder-picker");
 const playlistCon = document.querySelector<HTMLDivElement>(".playlist-con");
 
-const barsText = document.querySelector<HTMLDivElement>(".bars-text");
 
 const swatchColorMap = new Map<HTMLDivElement, RGB>();
 // settings handler
@@ -249,6 +255,9 @@ if (playIcon && pauseIcon && timerStart && resetTimer) {
 if (playIcon && pauseIcon) {
   // play song when play button is clicked, hide pause icon
   playIcon.addEventListener("click", () => {
+    if (bars && barsText) {
+      bars.classList.toggle("hide");
+    }
     wavesurfer.play();
     playIcon.classList.add("hide");
     pauseIcon.classList.remove("hide");
@@ -338,14 +347,23 @@ let audioFiles: null | File[] = null;
 
 // folder picker
 folderPicker?.addEventListener("change", async () => {
-  if (bars && barsText) {
-    bars.classList.toggle("hide");
-    barsText.classList.toggle("hide");
+  await wavesurfer.empty()
+  if (bars) {
+    bars.classList.remove("hide");
+  }
+  if (barsText) {
+    barsText.classList.remove("hide");
   }
 
   const files = Array.from(folderPicker.files ?? []);
   folderPicker.classList.add("hide");
   audioFiles = files.filter((file) => file.type.startsWith("audio/"));
+  
+  if (currentTitleP && audioFiles && currentTitleCon && !currentTitleP.textContent) {
+    currentTitleP.textContent = audioFiles[0].name
+    currentTitleCon.classList.remove("hide")
+  }
+
 
   if (playlistCon) {
     playlistCon.innerHTML = audioFiles
@@ -361,18 +379,25 @@ folderPicker?.addEventListener("change", async () => {
   if (filePickerCon) {
     filePickerCon.classList.add("hide");
   }
-
   // load first file to waveform
   await wavesurfer.loadBlob(audioFiles[0]);
-
-  if (bars && barsText) {
-    bars.classList.toggle("hide");
-    barsText.classList.toggle("hide");
+  
+  if (barsText) {
+    barsText.classList.add("hide");
+  }
+  if (bars) {
+    bars.classList.add("hide");
   }
 });
 
 // play clicked music with 1 event listener on the container
 playlistCon?.addEventListener("click", async (event) => {
+  await wavesurfer.empty()
+  let file
+  if (bars && currentTitleCon) {
+    bars.classList.toggle("hide");
+    currentTitleCon.classList.remove("hide")
+  }
   const target = event.target as HTMLElement;
   const item = target.closest<HTMLElement>(".song-con");
 
@@ -380,15 +405,38 @@ playlistCon?.addEventListener("click", async (event) => {
 
   const index = Number(item.dataset.index);
   if (audioFiles) {
-    const file = audioFiles[index];
+    file = audioFiles[index];
 
     if (!file) return;
+    
+    if (currentTitle && currentTitleP && file) {
+      currentTitleP.textContent = file.name
+    }
 
     await wavesurfer.loadBlob(file);
     await wavesurfer.play();
     playIcon.classList.add("hide");
     pauseIcon.classList.remove("hide");
     document.body.dataset.currentSongId = index.toString();
+  }
+  
+  if (bars) {
+    bars.classList.toggle("hide");
+  }
+  
+  
+});
+
+// add continuous play of multiple files
+wavesurfer.on("finish", async () => {
+  if (audioFiles) {
+    const index = Number(document.body.dataset.currentSongId) + 1
+    const file = audioFiles[index]
+    await wavesurfer.loadBlob(file);
+    await wavesurfer.play();
+    if (currentTitle && currentTitleP && file) {
+      currentTitleP.textContent = file.name
+    }
   }
 });
 
@@ -400,6 +448,10 @@ nextIcon.addEventListener("click", async () => {
 
     if (!file) return;
 
+    if (currentTitle && currentTitleP) {
+      currentTitleP.textContent = file.name
+    }
+    
     await wavesurfer.loadBlob(file);
     await wavesurfer.play();
     playIcon.classList.add("hide");
@@ -415,6 +467,10 @@ previousIcon.addEventListener("click", async () => {
     const file = audioFiles[index];
 
     if (!file) return;
+    
+    if (currentTitle && currentTitleP) {
+      currentTitleP.textContent = file.name
+    }
 
     await wavesurfer.loadBlob(file);
     await wavesurfer.play();
