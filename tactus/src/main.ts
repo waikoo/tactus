@@ -330,6 +330,14 @@ const renderTimer = () => {
   secondsInput.value = seconds.toString().padStart(2, "0");
 };
 
+minutesInput.addEventListener("click", () => {
+  timer.stop()
+})
+
+secondsInput.addEventListener("click", () => {
+  timer.stop()
+})
+
 // Update immediately when started
 timer.addEventListener("started", renderTimer);
 
@@ -341,6 +349,10 @@ timer.addEventListener("targetAchieved", () => {
   renderTimer();
   console.log("Rest finished!");
 });
+
+timer.addEventListener("stopped", () => {
+  console.log("STOPPED")
+})
 
 if (resetTimer) {
   resetTimer.addEventListener("click", () => {
