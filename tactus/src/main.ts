@@ -4,6 +4,28 @@ import { getDominantColorFromDiv, type RGB } from "./dominantColor";
 import { FFTVisualizer } from '@fft-visualizer/core'
 
 
+const minutesInput =
+  document.querySelector<HTMLInputElement>("#minutes")!;
+
+const secondsInput =
+  document.querySelector<HTMLInputElement>("#seconds")!;
+
+function getDurationInSeconds(): number {
+  const minutes = Math.max(0, Number(minutesInput.value) || 0);
+  const seconds = Math.max(0, Number(secondsInput.value) || 0);
+
+  return minutes * 60 + seconds;
+}
+
+function getStartValues(): { minutes: number; seconds: number } {
+  const totalSeconds = getDurationInSeconds();
+
+  return {
+    minutes: Math.floor(totalSeconds / 60),
+    seconds: totalSeconds % 60,
+  };
+}
+
 const uploadInput = document.querySelector(
   "#background-upload",
 ) as HTMLInputElement;
@@ -61,7 +83,6 @@ const swatch6 = settingsPanel?.querySelector<HTMLDivElement>(".swatch6");
 const waveLine = document.querySelector(".line") as HTMLDivElement;
 const bars = document.querySelector<HTMLDivElement>(".bars");
 const barsText = document.querySelector<HTMLDivElement>(".bars-text");
-const barsCon2 = document.querySelector<HTMLDivElement>(".bars-con2");
 
 // title
 const currentTitleCon = document.querySelector<HTMLParagraphElement>(".current-title-con")
@@ -76,8 +97,6 @@ const nextIcon = document.querySelector(".next") as HTMLDivElement;
 
 // timer controls
 const timerEl = document.querySelector<HTMLDivElement>(".timer");
-const timerMinutes = timerEl?.querySelector<HTMLParagraphElement>(".minutes");
-const timerSeconds = timerEl?.querySelector<HTMLParagraphElement>(".seconds");
 const timerStart = document.querySelector<HTMLButtonElement>(".timer-start");
 const resetTimer = document.querySelector<HTMLButtonElement>(".reset");
 
@@ -203,13 +222,12 @@ if (audioElement) {
   analyser.connect(audioContext.destination);
   
   const frequencyData = new Uint8Array(analyser.frequencyBinCount);
-  let animationFrameId = 0;
   
   function updateVisualizer() {
     analyser.getByteFrequencyData(frequencyData);
     viz.feedData(frequencyData);
   
-    animationFrameId = requestAnimationFrame(updateVisualizer);
+    requestAnimationFrame(updateVisualizer);
   }
   
   updateVisualizer();
@@ -303,15 +321,14 @@ if (playIcon && pauseIcon) {
 }
 
 const timer = new Timer();
+let lastStartValues = getStartValues();
+
 const renderTimer = () => {
   const { minutes, seconds } = timer.getTimeValues();
 
-  if (timerMinutes && timerSeconds) {
-    timerMinutes.textContent = minutes.toString();
-    timerSeconds.textContent = seconds.toString().padStart(2, "0");
-  }
+  minutesInput.value = minutes.toString().padStart(2, "0");
+  secondsInput.value = seconds.toString().padStart(2, "0");
 };
-renderTimer();
 
 // Update immediately when started
 timer.addEventListener("started", renderTimer);
@@ -328,16 +345,22 @@ timer.addEventListener("targetAchieved", () => {
 if (resetTimer) {
   resetTimer.addEventListener("click", () => {
     timer.reset();
+    minutesInput.value = lastStartValues.minutes.toString().padStart(2, "0");
+    secondsInput.value = lastStartValues.seconds.toString().padStart(2, "0");
   });
 }
 
-// start the countdown
+// start the countdown using the values currently in the DOM
 if (timerStart) {
   timerStart.addEventListener("click", () => {
-    console.log("clicked");
+    lastStartValues = getStartValues();
+
+    minutesInput.value = lastStartValues.minutes.toString().padStart(2, "0");
+    secondsInput.value = lastStartValues.seconds.toString().padStart(2, "0");
+
     timer.start({
       countdown: true,
-      startValues: { minutes: 1, seconds: 30 },
+      startValues: lastStartValues,
       precision: "seconds",
     });
   });
