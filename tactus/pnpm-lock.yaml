@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@fft-visualizer/core':
+        specifier: ^1.0.0
+        version: 1.0.0
       '@tauri-apps/api':
         specifier: ^2
         version: 2.12.4
@@ -29,6 +32,9 @@ importers:
         version: 8.3.4
 
 packages:
+
+  '@fft-visualizer/core@1.0.0':
+    resolution: {integrity: sha512-jkUXcSzrFJ/gFPsWeXDDpP1u5H43ZurKS/STDCQVpq6WpHCOaTeXtGTR+imvBFDuCPeT8y8z5kk0c34OGfTwYA==}
 
   '@oxc-project/types@0.154.0':
     resolution: {integrity: sha512-KYOUGQFlLWR+s4QMV2Q9ko38TZm7EdO87Qm7rvZLqk/webse/cDjtyxKhg/47l0byCbs/k46LT8qc4PKjAikzA==}
@@ -387,6 +393,8 @@ packages:
         optional: true
 
 snapshots:
+
+  '@fft-visualizer/core@1.0.0': {}
 
   '@oxc-project/types@0.154.0': {}
 

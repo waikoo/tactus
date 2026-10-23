@@ -9,6 +9,9 @@
     </head>
 
     <body>
+        <div class="visualizer-container">
+            <canvas></canvas>
+        </div>
         <section class="settings-con">
             <section class="settings">
                 <!--settings icon start-->
@@ -30,10 +33,24 @@
                 <!--settings icon end-->
             </section>
             <div class="settings-panel hide">
+                <div class="choose-image">
+                    <label for="background-upload" class="upload-button">
+                        Upload image
+                        <input
+                            type="file"
+                            id="background-upload"
+                            accept="image/*"
+                            hidden
+                        />
+                    </label>
+                </div>
                 <!--gradients from presets of https://cssgradient.io/-->
                 <div class="swatch1 selected-gradient"></div>
                 <div class="swatch2"></div>
                 <div class="swatch3"></div>
+                <div class="swatch4"></div>
+                <div class="swatch5"></div>
+                <div class="swatch6"></div>
             </div>
         </section>
 

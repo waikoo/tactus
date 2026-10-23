@@ -1,46 +1,164 @@
-import { getColorSync } from 'colorthief';
-import * as htmlToImage from 'html-to-image';
+import { getColorSync } from "colorthief";
+import * as htmlToImage from "html-to-image";
 
 export type RGB = [number, number, number];
 
+export interface DominantColorOptions {
+  useColorThief?: boolean;
+}
+
+const FALLBACK_COLOR: RGB = [128, 128, 128];
+
 /**
- * extracts the dominant RGB color from any CSS background string.
+ * Validates an RGB array.
+ * Each channel must be an integer between 0 and 255.
  */
-export default async function extractDominantColorFromComplexGradient(cssGradient: string): Promise<RGB> {
-  const sandbox = document.createElement('div');
-  sandbox.style.width = '100px';
-  sandbox.style.height = '100px';
-  sandbox.style.position = 'absolute';
-  sandbox.style.top = '-9999px';
-  sandbox.style.left = '-9999px';
-  sandbox.style.background = cssGradient;
-  
-  document.body.appendChild(sandbox);
+function validateRGB(value: unknown): RGB | null {
+  if (!Array.isArray(value) || value.length < 3) {
+    return null;
+  }
+
+  const channels = value.slice(0, 3);
+
+  if (
+    !channels.every(
+      (channel: unknown) =>
+        typeof channel === "number" &&
+        Number.isInteger(channel) &&
+        channel >= 0 &&
+        channel <= 255,
+    )
+  ) {
+    return null;
+  }
+
+  return [channels[0], channels[1], channels[2]];
+}
+
+/**
+ * Extracts the dominant color from a canvas without ColorThief.
+ * Pixels are bucketed into a coarse RGB histogram and the most
+ * populated bucket is averaged to produce the final color.
+ */
+export function getDominantColorFromCanvas(canvas: HTMLCanvasElement): RGB {
+  const context = canvas.getContext("2d", { willReadFrequently: true });
+
+  if (!context) {
+    return [...FALLBACK_COLOR];
+  }
+
+  const { data } = context.getImageData(0, 0, canvas.width, canvas.height);
+  const buckets = new Map<
+    number,
+    { count: number; r: number; g: number; b: number }
+  >();
+
+  for (let i = 0; i < data.length; i += 4) {
+    if (data[i + 3] < 128) continue;
+
+    const r = data[i];
+    const g = data[i + 1];
+    const b = data[i + 2];
+    const key = ((r >> 3) << 10) | ((g >> 3) << 5) | (b >> 3);
+    const bucket = buckets.get(key);
+
+    if (bucket) {
+      bucket.count += 1;
+      bucket.r += r;
+      bucket.g += g;
+      bucket.b += b;
+    } else {
+      buckets.set(key, { count: 1, r, g, b });
+    }
+  }
+
+  let dominant:
+    | { count: number; r: number; g: number; b: number }
+    | undefined;
+
+  for (const bucket of buckets.values()) {
+    if (!dominant || bucket.count > dominant.count) {
+      dominant = bucket;
+    }
+  }
+
+  if (!dominant) {
+    return [...FALLBACK_COLOR];
+  }
+
+  return [
+    Math.round(dominant.r / dominant.count),
+    Math.round(dominant.g / dominant.count),
+    Math.round(dominant.b / dominant.count),
+  ];
+}
+
+/**
+ * Extracts the dominant RGB color from an HTML element,
+ * including its rendered gradient.
+ *
+ * @param selector A CSS selector identifying the target element.
+ * @param options Set `useColorThief` to false to use the built-in
+ * histogram extractor instead.
+ * @returns A Promise resolving to a validated RGB tuple.
+ */
+export async function getDominantColorFromDiv(
+  selector: string,
+  { useColorThief = true }: DominantColorOptions = {},
+): Promise<RGB> {
+  let targetElement: HTMLElement | null;
 
   try {
-    const canvas = await htmlToImage.toCanvas(sandbox, {
-      width: 100,
-      height: 100
+    targetElement = document.querySelector<HTMLElement>(selector);
+  } catch (error: unknown) {
+    console.error(`Invalid CSS selector "${selector}":`, error);
+    return [...FALLBACK_COLOR];
+  }
+
+  if (!targetElement) {
+    console.warn(`Element matching "${selector}" not found.`);
+    return [...FALLBACK_COLOR];
+  }
+
+  try {
+    const canvas = await htmlToImage.toCanvas(targetElement, {
+      width: 60,
+      height: 60,
+      style: {
+        transform: "none",
+        margin: "0",
+        border: "none",
+        outline: "none",
+        boxShadow: "none",
+      },
     });
 
-    document.body.removeChild(sandbox);
+    if (useColorThief) {
+      try {
+        const result = getColorSync(canvas);
 
-    const dominantColor = getColorSync(canvas);
+        if (result) {
+          const rgb = validateRGB(result.array());
 
-    if (dominantColor && typeof dominantColor.rgb === 'function') {
-      const rgbStr = dominantColor.css(); // e.g. "rgb(232, 67, 147)"
-      const matches = rgbStr.match(/\d+/g);
-      if (matches && matches.length >= 3) {
-        return [Number(matches[0]), Number(matches[1]), Number(matches[2])];
+          if (rgb) {
+            return rgb;
+          }
+        }
+
+        console.warn(
+          `ColorThief could not extract a color from "${selector}", using fallback.`,
+        );
+      } catch (error: unknown) {
+        console.warn(
+          `ColorThief failed for "${selector}", using fallback:`,
+          error,
+        );
       }
     }
 
-    return (dominantColor as unknown as RGB) || [100, 100, 100];
-  } catch (error) {
-    console.error("Failed to render background gradient snapshot:", error);
-    if (sandbox.parentNode) {
-      document.body.removeChild(sandbox);
-    }
-    return [100, 100, 100]; 
+    return getDominantColorFromCanvas(canvas);
+  } catch (error: unknown) {
+    console.error("Failed to extract dominant color:", error);
+    return [...FALLBACK_COLOR];
   }
 }
