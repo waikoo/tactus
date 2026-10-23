@@ -26,6 +26,11 @@ function getStartValues(): { minutes: number; seconds: number } {
   };
 }
 
+const applyBackground = (background: string) => {
+  document.body.style.background = background;
+  document.documentElement.style.setProperty("--app-background", background);
+};
+
 const uploadInput = document.querySelector(
   "#background-upload",
 ) as HTMLInputElement;
@@ -40,6 +45,10 @@ uploadInput.addEventListener("change", () => {
 
   image.onload = () => {
     document.body.style.backgroundImage = `url("${imageUrl}")`;
+    document.documentElement.style.setProperty(
+      "--app-background",
+      `url("${imageUrl}")`,
+    );
   };
 
   image.onerror = () => {
@@ -186,7 +195,7 @@ if (swatch1 && swatch2 && swatch3 && swatch4 && swatch5 && swatch6) {
 }
 
 // start with the first swatch's gradient as the background
-document.body.style.background = swatch1Gradient;
+applyBackground(swatch1Gradient);
 
 // visualizer setup
 const canvas = document.querySelector('canvas')!
@@ -242,7 +251,7 @@ settingsPanel?.addEventListener("click", (e: MouseEvent) => {
 
   if (!swatch || !settingsPanel.contains(swatch)) return;
 
-  document.body.style.background = swatch.style.background;
+  applyBackground(swatch.style.background);
 
   settingsPanel
     .querySelectorAll(
@@ -330,16 +339,28 @@ const renderTimer = () => {
   secondsInput.value = seconds.toString().padStart(2, "0");
 };
 
+const setTimerRunning = (running: boolean) => {
+  if (!timerStart) return;
+
+  timerStart.classList.toggle("pressed", running);
+  timerStart.title = running ? "Pause Timer" : "Start Timer";
+};
+
 minutesInput.addEventListener("click", () => {
-  timer.stop()
-})
+  timer.stop();
+  setTimerRunning(false);
+});
 
 secondsInput.addEventListener("click", () => {
-  timer.stop()
-})
+  timer.stop();
+  setTimerRunning(false);
+});
 
 // Update immediately when started
-timer.addEventListener("started", renderTimer);
+timer.addEventListener("started", () => {
+  renderTimer();
+  setTimerRunning(true);
+});
 
 // Update every second
 timer.addEventListener("secondsUpdated", renderTimer);
@@ -351,8 +372,8 @@ timer.addEventListener("targetAchieved", () => {
 });
 
 timer.addEventListener("stopped", () => {
-  console.log("STOPPED")
-})
+  setTimerRunning(false);
+});
 
 if (resetTimer) {
   resetTimer.addEventListener("click", () => {
@@ -362,9 +383,14 @@ if (resetTimer) {
   });
 }
 
-// start the countdown using the values currently in the DOM
+// start or stop the countdown using the values currently in the DOM
 if (timerStart) {
   timerStart.addEventListener("click", () => {
+    if (timerStart.classList.contains("pressed")) {
+      timer.stop();
+      return;
+    }
+
     lastStartValues = getStartValues();
 
     minutesInput.value = lastStartValues.minutes.toString().padStart(2, "0");
