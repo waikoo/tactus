@@ -115,13 +115,27 @@ const filePickerCon =
 const folderPicker = document.querySelector<HTMLInputElement>("#folder-picker");
 const playlistCon = document.querySelector<HTMLDivElement>(".playlist-con");
 
+const overlay = document.querySelector<HTMLDivElement>(".overlay")
 
 const swatchColorMap = new Map<HTMLDivElement, RGB>();
+
 // settings handler
-settings?.addEventListener("click", (e: MouseEvent) => {
-  console.log(e.currentTarget);
+settings?.addEventListener("click", () => {
   settingsPanel?.classList.toggle("hide");
+  overlay?.classList.toggle("hide")
 });
+
+document.addEventListener('click', (e: MouseEvent) => {
+  const target = e.target as HTMLElement
+  if (!settingsPanel?.classList.contains("hide") && 
+        !settings?.contains(target) && 
+        !settingsPanel?.contains(target)) {
+      
+      settingsPanel?.classList.add("hide");
+      overlay?.classList.add("hide");
+    }
+
+})
 
 // background
 // define gradients
@@ -141,21 +155,21 @@ const bgColors = {
     "rgba(87, 199, 133, 1) 50%",
     "rgba(237, 221, 83, 1) 100%",
   ],
-  orchidDreamRadial: [
+  pinkMagentaWhiteRadial: [
     "rgba(255, 119, 200, 1) 0%",
     "rgba(192, 132, 252, 0.95) 30%",
     "rgba(124, 58, 237, 0.8) 60%",
     "rgba(36, 14, 56, 0) 100%",
   ],
 
-  arcticPulseRadial: [
+  clubRadial: [
     "rgba(165, 243, 252, 1) 0%",
     "rgba(103, 232, 249, 0.95) 25%",
     "rgba(129, 140, 248, 0.8) 55%",
-    "rgba(30, 27, 75, 0) 100%",
+    "rgba(196, 23, 208) 100%",
   ],
 
-  emberRoseRadial: [
+  emberRoseBlackRadial: [
     "rgba(255, 190, 165, 1) 0%",
     "rgba(251, 113, 133, 0.95) 30%",
     "rgba(190, 100, 130, 0.8) 60%",
@@ -180,9 +194,9 @@ const createGradient = (
 const swatch1Gradient = createGradient(bgColors.magentaRedYellowLR);
 const swatch2Gradient = createGradient(bgColors.blackBlueLR);
 const swatch3Gradient = createGradient(bgColors.tealGreenBrownLR);
-const swatch4Gradient = createGradient(bgColors.orchidDreamRadial, "radial");
-const swatch5Gradient = createGradient(bgColors.arcticPulseRadial, "radial");
-const swatch6Gradient = createGradient(bgColors.emberRoseRadial, "radial");
+const swatch4Gradient = createGradient(bgColors.pinkMagentaWhiteRadial, "radial");
+const swatch5Gradient = createGradient(bgColors.clubRadial, "radial");
+const swatch6Gradient = createGradient(bgColors.emberRoseBlackRadial, "radial");
 
 // apply the gradients to the swatches before extracting their colors
 if (swatch1 && swatch2 && swatch3 && swatch4 && swatch5 && swatch6) {

@@ -171,7 +171,8 @@ h1,
     backdrop-filter: blur(20px);
 }
 
-.next:hover, .previous:hover {
+.next:hover,
+.previous:hover {
     background: rgb(255, 255, 255, 25%);
 }
 
@@ -335,7 +336,7 @@ p {
     border-radius: 30px;
     width: 300px;
     position: absolute;
-    z-index: 2;
+    z-index: 3;
     isolation: isolate;
     top: 30px;
     right: 80px;
@@ -567,7 +568,8 @@ a:hover {
     inset: 0;
 }
 
-#minutes, #seconds {
+#minutes,
+#seconds {
     border: none;
     font-size: 6rem;
     width: 2ch;
@@ -580,4 +582,12 @@ a:hover {
 .settings .glass {
     padding: 0.5rem;
     box-shadow: 2px 2px 20px 2px rgb(0, 0, 0, 25%);
+}
+
+.overlay {
+    background: rgb(0, 0, 0, 50%);
+    inset: 0;
+    position: fixed;
+    backdrop-filter: blur(2px);
+    z-index: 1;
 }
