@@ -108,7 +108,6 @@ h1,
     gap: 4rem;
     grid-template-columns: 1fr auto auto auto 1fr;
     margin: 0 auto;
-    margin-top: 1rem;
     align-items: center;
     padding: 1rem 0;
 }
@@ -180,6 +179,9 @@ h1,
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: 400px;
+    height: 400px;
+    align-self: center;
 }
 
 .display {
@@ -191,11 +193,6 @@ h1,
     top: 5rem;
     border-radius: 30px;
     padding: 0 1rem;
-}
-
-.timer {
-    width: 400px;
-    height: 400px;
 }
 
 button {
@@ -227,6 +224,7 @@ button {
 .reset {
     border-radius: 1000px;
     cursor: pointer;
+    padding: 0.5rem;
 }
 
 .pressed {
@@ -242,13 +240,16 @@ button {
     background: rgba(255, 255, 255, 25%);
 }
 
-.timer-playlist {
-    padding-top: 2rem;
+.music-controls-timer {
     display: flex;
-    justify-content: space-between;
-    max-width: 1200px;
-    margin: 0 auto;
-    gap: 4rem;
+    flex-direction: column;
+    gap: 5rem;
+}
+
+.lower-con {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
 }
 
 .github-logo {
@@ -282,7 +283,6 @@ p {
 
 .playlist-con {
     overflow-y: auto;
-    height: 360px;
     padding: 0 1rem;
 }
 

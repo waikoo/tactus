@@ -463,6 +463,10 @@ folderPicker?.addEventListener("change", async () => {
   if (bars) {
     bars.classList.add("hide");
   }
+
+  if (playlistCon) {
+    playlistCon.style.height = `${window.innerHeight - 400}px`
+  }
 });
 
 // play clicked music with 1 event listener on the container
