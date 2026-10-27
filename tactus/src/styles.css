@@ -241,6 +241,7 @@ button {
 }
 
 .music-controls-timer {
+    padding: 6rem 0;
     display: flex;
     flex-direction: column;
     gap: 5rem;

@@ -103,6 +103,7 @@ const playIcon = document.querySelector(".play") as HTMLDivElement;
 const pauseIcon = document.querySelector(".pause") as HTMLDivElement;
 const previousIcon = document.querySelector(".previous") as HTMLDivElement;
 const nextIcon = document.querySelector(".next") as HTMLDivElement;
+const musicControlsTimer = document.querySelector<HTMLDivElement>(".music-controls-timer")
 
 // timer controls
 const timerEl = document.querySelector<HTMLDivElement>(".timer");
@@ -370,19 +371,29 @@ secondsInput.addEventListener("click", () => {
   setTimerRunning(false);
 });
 
-// Update immediately when started
+// when timer is started...
 timer.addEventListener("started", () => {
+  // save values put in to localStorage
+  const time = `${minutesInput.value}:${secondsInput.value}`
+  localStorage.setItem("timer", time)
   renderTimer();
   setTimerRunning(true);
 });
 
-// Update every second
+// update timer every second
 timer.addEventListener("secondsUpdated", renderTimer);
 
-// Handle completion
+// handle timer completion
 timer.addEventListener("targetAchieved", () => {
   renderTimer();
-  console.log("Rest finished!");
+  setTimeout(() => {
+    const savedPreviousTimerValue = localStorage.getItem("timer")
+    if (savedPreviousTimerValue) {
+      const [minutes, seconds] = savedPreviousTimerValue.split(":")
+      minutesInput.value = minutes
+      secondsInput.value = seconds
+    }
+  }, 1000)
 });
 
 timer.addEventListener("stopped", () => {
@@ -439,6 +450,10 @@ folderPicker?.addEventListener("change", async () => {
     currentTitleCon.classList.remove("hide")
   }
 
+  
+  if (musicControlsTimer) {
+    musicControlsTimer.style.padding = "0"
+  }
 
   if (playlistCon) {
     playlistCon.innerHTML = audioFiles
