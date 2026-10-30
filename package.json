@@ -1,20 +1,28 @@
 {
+  "type": "module",
   "name": "tactus",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "vite --host 127.0.0.1",
+    "build": "vite build",
+    "preview": "vite preview"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@types/colorthief": "^2.6.1",
+    "@types/node": "^26.6.6",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.5",
     "wavesurfer.js": "^8.0.2"
   },
   "dependencies": {
+    "@fft-visualizer/core": "^1.0.0",
     "colorthief": "^3.5.0",
+    "easytimer.js": "^4.6.0",
     "html-to-image": "^1.11.13"
   }
 }
