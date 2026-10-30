@@ -45,6 +45,14 @@
                             hidden
                         />
                     </label>
+                    <!--keyboard shortcuts toggle-->
+                    <div class="kbd-toggle">
+                        <kbd>Keyboard Shortcuts</kbd>
+                        <label class="toggle">
+                            <input type="checkbox" id="kbd-toggle"/>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
                 </div>
                 <!--gradients from presets of https://cssgradient.io/-->
                 <div class="swatch1 selected-gradient"></div>
@@ -110,7 +118,7 @@
                                 ></path>
                             </svg>
                         </div>
-                
+
                         <div class="play-pause glass transition">
                             <div class="play transition">
                                 <svg
@@ -147,7 +155,7 @@
                                 </svg>
                             </div>
                         </div>
-                
+
                         <div class="next">
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -166,7 +174,7 @@
                             </svg>
                         </div>
                     </section>
-                
+
                     <!--timer section START-->
                     <section class="timer glass">
                         <div class="display">
@@ -176,17 +184,17 @@
                                 inputmode="numeric"
                                 value="05"
                                 aria-label="Minutes"
-                                />
-                                <span>:</span>
-                                <input
+                            />
+                            <span>:</span>
+                            <input
                                 id="seconds"
                                 type="text"
                                 inputmode="numeric"
                                 value="30"
                                 aria-label="Seconds"
-                                />
+                            />
                         </div>
-                
+
                         <div class="timer-controls">
                             <button class="timer-start glass transition">
                                 <svg
@@ -249,7 +257,7 @@
                             </svg>
                             <p>Choose music folder</p>
                         </label>
-                
+
                         <input
                             type="file"
                             id="folder-picker"
@@ -259,7 +267,7 @@
                         />
                         <button></button>
                     </div>
-                
+
                     <div class="playlist-con"></div>
                 </section>
             </div>
@@ -283,6 +291,13 @@
                 ></path>
             </svg>
         </a>
+        <kbd class="c kbd hide">c</kbd>
+        <kbd class="s kbd hide">s</kbd>
+        <kbd class="enter kbd hide">Enter</kbd>
+        <kbd class="r kbd hide">r</kbd>
+        <kbd class="space kbd hide">Space</kbd>
+        <kbd class="n kbd hide">n</kbd>
+        <kbd class="p kbd hide">p</kbd>
         <script type="module" src="/src/main.ts"></script>
     </body>
 </html>

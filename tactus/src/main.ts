@@ -1,14 +1,11 @@
 import WaveSurfer from "wavesurfer.js";
 import { Timer } from "easytimer.js";
 import { getDominantColorFromDiv, type RGB } from "./dominantColor";
-import { FFTVisualizer } from '@fft-visualizer/core'
+import { FFTVisualizer } from "@fft-visualizer/core";
 
+const minutesInput = document.querySelector<HTMLInputElement>("#minutes")!;
 
-const minutesInput =
-  document.querySelector<HTMLInputElement>("#minutes")!;
-
-const secondsInput =
-  document.querySelector<HTMLInputElement>("#seconds")!;
+const secondsInput = document.querySelector<HTMLInputElement>("#seconds")!;
 
 function getDurationInSeconds(): number {
   const minutes = Math.max(0, Number(minutesInput.value) || 0);
@@ -77,6 +74,7 @@ const wavesurfer = WaveSurfer.create({
   dragToSeek: true,
 });
 
+
 // settings
 const settings = document.querySelector<HTMLTableSectionElement>(".settings");
 const settingsPanel = document.querySelector<HTMLDivElement>(".settings-panel");
@@ -94,16 +92,22 @@ const bars = document.querySelector<HTMLDivElement>(".bars");
 const barsText = document.querySelector<HTMLDivElement>(".bars-text");
 
 // title
-const currentTitleCon = document.querySelector<HTMLParagraphElement>(".current-title-con")
-const currentTitle = document.querySelector<HTMLParagraphElement>(".current-title")
-const currentTitleP = document.querySelector<HTMLParagraphElement>(".current-title p")
+const currentTitleCon =
+  document.querySelector<HTMLParagraphElement>(".current-title-con");
+const currentTitle =
+  document.querySelector<HTMLParagraphElement>(".current-title");
+const currentTitleP =
+  document.querySelector<HTMLParagraphElement>(".current-title p");
 
 // music player controls
 const playIcon = document.querySelector(".play") as HTMLDivElement;
 const pauseIcon = document.querySelector(".pause") as HTMLDivElement;
+const playPause = document.querySelector<HTMLDivElement>(".play-pause");
 const previousIcon = document.querySelector(".previous") as HTMLDivElement;
 const nextIcon = document.querySelector(".next") as HTMLDivElement;
-const musicControlsTimer = document.querySelector<HTMLDivElement>(".music-controls-timer")
+const musicControlsTimer = document.querySelector<HTMLDivElement>(
+  ".music-controls-timer",
+);
 
 // timer controls
 const timerEl = document.querySelector<HTMLDivElement>(".timer");
@@ -115,28 +119,39 @@ const filePickerCon =
   document.querySelector<HTMLDivElement>(".file-picker-con");
 const folderPicker = document.querySelector<HTMLInputElement>("#folder-picker");
 const playlistCon = document.querySelector<HTMLDivElement>(".playlist-con");
+const folderButton = document.querySelector<HTMLLabelElement>(".folder-button");
 
-const overlay = document.querySelector<HTMLDivElement>(".overlay")
+const overlay = document.querySelector<HTMLDivElement>(".overlay");
 
 const swatchColorMap = new Map<HTMLDivElement, RGB>();
+const slider = document.querySelector<HTMLLabelElement>(".slider");
+
+// kbd
+const c = document.querySelector<HTMLElement>('.c')
+const s = document.querySelector<HTMLElement>('.s')
+const enter = document.querySelector<HTMLElement>('.enter')
+const rEl = document.querySelector<HTMLElement>('.r')
+const n = document.querySelector<HTMLElement>('.n')
+const p = document.querySelector<HTMLElement>('.p')
+const space = document.querySelector<HTMLElement>('.space')
 
 // settings handler
 settings?.addEventListener("click", () => {
   settingsPanel?.classList.toggle("hide");
-  overlay?.classList.toggle("hide")
+  overlay?.classList.toggle("hide");
 });
 
-document.addEventListener('click', (e: MouseEvent) => {
-  const target = e.target as HTMLElement
-  if (!settingsPanel?.classList.contains("hide") && 
-        !settings?.contains(target) && 
-        !settingsPanel?.contains(target)) {
-      
-      settingsPanel?.classList.add("hide");
-      overlay?.classList.add("hide");
-    }
-
-})
+document.addEventListener("click", (e: MouseEvent) => {
+  const target = e.target as HTMLElement;
+  if (
+    !settingsPanel?.classList.contains("hide") &&
+    !settings?.contains(target) &&
+    !settingsPanel?.contains(target)
+  ) {
+    settingsPanel?.classList.add("hide");
+    overlay?.classList.add("hide");
+  }
+});
 
 // background
 // define gradients
@@ -195,7 +210,10 @@ const createGradient = (
 const swatch1Gradient = createGradient(bgColors.magentaRedYellowLR);
 const swatch2Gradient = createGradient(bgColors.blackBlueLR);
 const swatch3Gradient = createGradient(bgColors.tealGreenBrownLR);
-const swatch4Gradient = createGradient(bgColors.pinkMagentaWhiteRadial, "radial");
+const swatch4Gradient = createGradient(
+  bgColors.pinkMagentaWhiteRadial,
+  "radial",
+);
 const swatch5Gradient = createGradient(bgColors.clubRadial, "radial");
 const swatch6Gradient = createGradient(bgColors.emberRoseBlackRadial, "radial");
 
@@ -213,7 +231,7 @@ if (swatch1 && swatch2 && swatch3 && swatch4 && swatch5 && swatch6) {
 applyBackground(swatch1Gradient);
 
 // visualizer setup
-const canvas = document.querySelector('canvas')!
+const canvas = document.querySelector("canvas")!;
 
 if (!canvas) throw new Error("Visualizer canvas not found");
 
@@ -241,23 +259,23 @@ analyser.smoothingTimeConstant = 0.8;
 const audioElement = wavesurfer.getMediaElement();
 if (audioElement) {
   const source = audioContext.createMediaElementSource(audioElement);
-  
+
   source.connect(analyser);
   analyser.connect(audioContext.destination);
-  
+
   const frequencyData = new Uint8Array(analyser.frequencyBinCount);
-  
+
   function updateVisualizer() {
     analyser.getByteFrequencyData(frequencyData);
     viz.feedData(frequencyData);
-  
+
     requestAnimationFrame(updateVisualizer);
   }
-  
+
   updateVisualizer();
 }
 // change background gradients
-settingsPanel?.addEventListener("click", (e: MouseEvent) => {
+settingsPanel?.addEventListener("click", async (e: MouseEvent) => {
   e.stopPropagation();
   const target = e.target as HTMLElement;
   const swatch = target.closest<HTMLDivElement>(
@@ -274,6 +292,16 @@ settingsPanel?.addEventListener("click", (e: MouseEvent) => {
     )
     .forEach((child) => child.classList.remove("selected-gradient"));
   swatch.classList.add("selected-gradient");
+
+  if (target) {
+    const [r2, g2, b2] = await getDominantColorFromDiv(
+      `.${target.classList[0]}`,
+    );
+
+    if (slider) {
+      slider.style.backgroundColor = `rgb(${r2}, ${g2}, ${b2})`;
+    }
+  }
 
   const rgb = swatchColorMap.get(swatch);
   if (timerEl && rgb) {
@@ -374,8 +402,8 @@ secondsInput.addEventListener("click", () => {
 // when timer is started...
 timer.addEventListener("started", () => {
   // save values put in to localStorage
-  const time = `${minutesInput.value}:${secondsInput.value}`
-  localStorage.setItem("timer", time)
+  const time = `${minutesInput.value}:${secondsInput.value}`;
+  localStorage.setItem("timer", time);
   renderTimer();
   setTimerRunning(true);
 });
@@ -387,13 +415,13 @@ timer.addEventListener("secondsUpdated", renderTimer);
 timer.addEventListener("targetAchieved", () => {
   renderTimer();
   setTimeout(() => {
-    const savedPreviousTimerValue = localStorage.getItem("timer")
+    const savedPreviousTimerValue = localStorage.getItem("timer");
     if (savedPreviousTimerValue) {
-      const [minutes, seconds] = savedPreviousTimerValue.split(":")
-      minutesInput.value = minutes
-      secondsInput.value = seconds
+      const [minutes, seconds] = savedPreviousTimerValue.split(":");
+      minutesInput.value = minutes;
+      secondsInput.value = seconds;
     }
-  }, 1000)
+  }, 1000);
 });
 
 timer.addEventListener("stopped", () => {
@@ -433,7 +461,7 @@ let audioFiles: null | File[] = null;
 
 // folder picker
 folderPicker?.addEventListener("change", async () => {
-  await wavesurfer.empty()
+  await wavesurfer.empty();
   if (bars) {
     bars.classList.remove("hide");
   }
@@ -444,15 +472,19 @@ folderPicker?.addEventListener("change", async () => {
   const files = Array.from(folderPicker.files ?? []);
   folderPicker.classList.add("hide");
   audioFiles = files.filter((file) => file.type.startsWith("audio/"));
-  
-  if (currentTitleP && audioFiles && currentTitleCon && !currentTitleP.textContent) {
-    currentTitleP.textContent = audioFiles[0].name
-    currentTitleCon.classList.remove("hide")
+
+  if (
+    currentTitleP &&
+    audioFiles &&
+    currentTitleCon &&
+    !currentTitleP.textContent
+  ) {
+    currentTitleP.textContent = audioFiles[0].name;
+    currentTitleCon.classList.remove("hide");
   }
 
-  
   if (musicControlsTimer) {
-    musicControlsTimer.style.padding = "0"
+    musicControlsTimer.style.padding = "0";
   }
 
   if (playlistCon) {
@@ -471,7 +503,7 @@ folderPicker?.addEventListener("change", async () => {
   }
   // load first file to waveform
   await wavesurfer.loadBlob(audioFiles[0]);
-  
+
   if (barsText) {
     barsText.classList.add("hide");
   }
@@ -480,17 +512,21 @@ folderPicker?.addEventListener("change", async () => {
   }
 
   if (playlistCon) {
-    playlistCon.style.height = `${window.innerHeight - 400}px`
+    playlistCon.style.height = `${window.innerHeight - 400}px`;
+  }
+
+  if (c) {
+    c.remove()
   }
 });
 
 // play clicked music with 1 event listener on the container
 playlistCon?.addEventListener("click", async (event) => {
-  await wavesurfer.empty()
-  let file
+  await wavesurfer.empty();
+  let file;
   if (bars && currentTitleCon) {
     bars.classList.toggle("hide");
-    currentTitleCon.classList.remove("hide")
+    currentTitleCon.classList.remove("hide");
   }
   const target = event.target as HTMLElement;
   const item = target.closest<HTMLElement>(".song-con");
@@ -502,9 +538,9 @@ playlistCon?.addEventListener("click", async (event) => {
     file = audioFiles[index];
 
     if (!file) return;
-    
+
     if (currentTitle && currentTitleP && file) {
-      currentTitleP.textContent = file.name
+      currentTitleP.textContent = file.name;
     }
 
     await wavesurfer.loadBlob(file);
@@ -513,23 +549,21 @@ playlistCon?.addEventListener("click", async (event) => {
     pauseIcon.classList.remove("hide");
     document.body.dataset.currentSongId = index.toString();
   }
-  
+
   if (bars) {
     bars.classList.toggle("hide");
   }
-  
-  
 });
 
 // add continuous play of multiple files
 wavesurfer.on("finish", async () => {
   if (audioFiles) {
-    const index = Number(document.body.dataset.currentSongId) + 1
-    const file = audioFiles[index]
+    const index = Number(document.body.dataset.currentSongId) + 1;
+    const file = audioFiles[index];
     await wavesurfer.loadBlob(file);
     await wavesurfer.play();
     if (currentTitle && currentTitleP && file) {
-      currentTitleP.textContent = file.name
+      currentTitleP.textContent = file.name;
     }
   }
 });
@@ -543,9 +577,9 @@ nextIcon.addEventListener("click", async () => {
     if (!file) return;
 
     if (currentTitle && currentTitleP) {
-      currentTitleP.textContent = file.name
+      currentTitleP.textContent = file.name;
     }
-    
+
     await wavesurfer.loadBlob(file);
     await wavesurfer.play();
     playIcon.classList.add("hide");
@@ -561,9 +595,9 @@ previousIcon.addEventListener("click", async () => {
     const file = audioFiles[index];
 
     if (!file) return;
-    
+
     if (currentTitle && currentTitleP) {
-      currentTitleP.textContent = file.name
+      currentTitleP.textContent = file.name;
     }
 
     await wavesurfer.loadBlob(file);
@@ -621,3 +655,86 @@ document.documentElement.style.setProperty(
   "--dominant-color",
   `rgb(${r}, ${g}, ${b}) 75%`,
 );
+
+const kbdToggleHandler = () => {
+  document.body.dataset.kbd = document.body.dataset.kbd == "true" ? "false" : "true"
+  
+  if (document.body.dataset.kbd == "false") {
+    c?.classList.add("hide")
+    s?.classList.add("hide")
+    enter?.classList.add("hide")
+    rEl?.classList.add("hide")
+    n?.classList.add("hide")
+    space?.classList.add("hide")
+    p?.classList.add("hide")
+    
+  } else {
+    c?.classList.remove("hide")
+    s?.classList.remove("hide")
+    enter?.classList.remove("hide")
+    rEl?.classList.remove("hide")
+    space?.classList.remove("hide")
+    n?.classList.remove("hide")
+    p?.classList.remove("hide")
+  }
+}
+
+if (slider) {
+  slider.addEventListener("click", kbdToggleHandler)
+}
+  
+document.addEventListener("keyup", (e: KeyboardEvent) => {
+  if (e.key === "c") {
+    if (folderButton) {
+      folderButton.click()
+    }
+  }
+})
+
+document.addEventListener("keyup", (e: KeyboardEvent) => {
+  if (e.key === "s") {
+    if (settings) {
+      settings.click()
+    }
+  }
+})
+
+document.addEventListener("keyup", (e: KeyboardEvent) => {
+  if (e.key === "Enter") {
+    if (timerStart) {
+      timerStart.click()
+    }
+  }
+})
+
+document.addEventListener("keyup", (e: KeyboardEvent) => {
+  if (e.key === "r") {
+    if (resetTimer) {
+      resetTimer.click()
+    }
+  }
+})
+
+document.addEventListener("keyup", (e: KeyboardEvent) => {
+  if (e.key === "Space") {
+    if (playPause) {
+      playPause.click()
+    }
+  }
+})
+
+document.addEventListener("keyup", (e: KeyboardEvent) => {
+  if (e.key === "n") {
+    if (nextIcon) {
+      nextIcon.click()
+    }
+  }
+})
+
+document.addEventListener("keyup", (e: KeyboardEvent) => {
+  if (e.key === "p") {
+    if (previousIcon) {
+      previousIcon.click()
+    }
+  }
+})

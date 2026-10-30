@@ -179,8 +179,8 @@ h1,
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 400px;
-    height: 400px;
+    width: 35vh;
+    height: 35vh;
     align-self: center;
 }
 
@@ -306,6 +306,60 @@ p {
 .file-picker-con {
     display: flex;
     justify-content: center;
+    anchor-name: --file-picker-con;
+}
+.settings svg {
+    anchor-name: --settings-icon;
+}
+.timer-start {
+    anchor-name: --start-timer;
+}
+.reset {
+    anchor-name: --reset-timer;
+}
+.previous {
+    anchor-name: --previous;
+}
+.next {
+    anchor-name: --next;
+}
+.play-pause {
+    anchor-name: --play-pause;
+}
+.c {
+    position-anchor: --file-picker-con;
+}
+
+.s {
+    position-anchor: --settings-icon;
+}
+
+.enter {
+    position-anchor: --start-timer;
+}
+
+.r {
+    position-anchor: --reset-timer;
+}
+
+.space {
+    position-anchor: --play-pause;
+}
+
+.n {
+    position-anchor: --next;
+}
+
+.p {
+    position-anchor: --previous;
+}
+.kbd {
+    position: fixed;
+    position-area: bottom;
+    margin-top: 1rem;
+    font-size: 2rem;
+    background: rgb(255, 255, 255, 75%);
+    color: black;
 }
 
 .folder-button:hover {
@@ -591,4 +645,70 @@ a:hover {
     position: fixed;
     backdrop-filter: blur(2px);
     z-index: 1;
+}
+
+.toggle {
+    display: inline-flex;
+    position: relative;
+    width: 48px;
+    height: 28px;
+    cursor: pointer;
+}
+
+.toggle input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    inset: 0;
+    background: #777;
+    border-radius: 999px;
+    transition: background 150ms;
+}
+
+.slider::before {
+    content: "";
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    left: 4px;
+    top: 4px;
+    background: white;
+    border-radius: 50%;
+    transition: transform 150ms;
+}
+
+.toggle input:checked + .slider {
+    background: var(--dominant-color);
+}
+
+.toggle input:checked + .slider::before {
+    transform: translateX(20px);
+}
+
+.toggle input:focus-visible + .slider {
+    outline: 2px solid currentColor;
+    outline-offset: 3px;
+}
+
+.kbd-toggle {
+    margin-top: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+kbd {
+  display: inline-block;
+  padding: 2px 7px;
+  font: 500 0.8em/1.5 system-ui, sans-serif;
+  color: var(--text-color);
+  font-weight: 800;
+  border: 1px solid black;
+  border-radius: 5px;
+  box-shadow: 0 2px 0 rgb(0, 0, 0, 50%);
+  white-space: nowrap;
 }
